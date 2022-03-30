@@ -74,10 +74,8 @@ public class PotatoPlugin extends Plugin {
 					if (args.length == 0) {
 						StringBuilder builder = new StringBuilder();
 						builder.append("[orange]Maps: \n[]");
-						int id = 0;
 						for (Map m : Vars.maps.all()) {
 							builder.append(m.name()).append("\n");
-							id++;
 						}
 						player.sendMessage(builder.toString());
 						return;
