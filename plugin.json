@@ -1,7 +1,7 @@
 {
   "name": "Potato",
   "author": "Potato Chronicler",
-  "main": "PotatoPlugin",
+  "main": "potato.PotatoPlugin",
   "description": "Potato plugin to do potato specific things",
-  "version": "1.0"
+  "version": "InDev"
 }

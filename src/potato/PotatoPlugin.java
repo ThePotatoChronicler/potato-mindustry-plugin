@@ -1,18 +1,16 @@
+package potato;
+
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.jetbrains.annotations.NotNull;
-import arc.Core;
 import arc.Events;
-import arc.files.Fi;
 import arc.util.Log;
 import arc.util.serialization.JsonValue;
-import arc.util.serialization.JsonReader;
 import arc.util.CommandHandler;
 import arc.util.Timer;
-import mindustry.maps.Map;
 import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.mod.Plugin;
@@ -29,12 +27,13 @@ public class PotatoPlugin extends Plugin {
 	public WebhookClient wc;
 	protected CompletableFuture<?> lastMessage;
 
-	// Voting variables
-	public Optional<Map> votedmap = Optional.empty();
+	// Command Registers
+	protected ClientCommandRegister[] clientCommandRegisters = { new Votemap() };
+	protected ServerCommandRegister[] serverCommandRegisters = {};
 
 	public PotatoPlugin() {
 		try {
-			settings = readJson(configPath);
+			settings = Util.readJson(configPath);
 		} catch (FileNotFoundException exception) {
 			Log.err("Missing config file for Potato plugin");
 			return;
@@ -103,73 +102,17 @@ public class PotatoPlugin extends Plugin {
 	}
 
     public void registerClientCommands(CommandHandler handler) {
-		handler.<Player>register("votemap", "[mapname/yes/no...]", "Selects the next map to vote for and some other things.",
-				(args, player) -> {
-					if (args.length == 0) {
-						if (votedmap.isPresent()) {
-							player.sendMessage("[green]Currently voting for map:\n[acid]" + votedmap.get().name());
-						} else {
-							player.sendMessage(getStyledMaps());
-						}
-					} else {
-						if (votedmap.isPresent()) {
-							player.sendMessage("Already voting for map [cyan]" + votedmap.get().name());
-						} else {
-							Map map = Vars.maps.byName(args[0]);
-							if (map == null) {
-								player.sendMessage("[red]This map doesn't exist");
-							} else {
-								votedmap = Optional.of(map);
-								Call.sendMessage(getColoredPlayerName(player) + "[white] started a vote for map [acid]" + map.name());
-							}
-						}
-					}
-				});
-	}
-
-	protected static JsonValue readJson(@NotNull String path) throws FileNotFoundException {
-		Fi config = Core.files.local(path);
-		if (config.exists()) {
-			return new JsonReader().parse(config);
-		} else {
-			throw new FileNotFoundException("Missing config/potato.json");
+		Log.info("Registering " + String.valueOf(clientCommandRegisters.length) + " client commands");
+		for (ClientCommandRegister register : clientCommandRegisters) {
+			register.registerClientCommands(handler);
 		}
 	}
 
-	/* Gets a stylized list of maps
-	 */
-	public static String getStyledMaps(String titleColor, String customColor) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(titleColor);
-		builder.append("Maps: \n");
-
-		Iterator<Map> iter = Vars.maps.all().iterator();
-		while (iter.hasNext()) {
-			Map m = iter.next();
-			if (m.custom) {
-				builder.append(m.name());
-			} else {
-				builder.append(customColor).append(m.name());
-			}
-
-			if (iter.hasNext()) {
-				builder.append("[white], ");
-			} else {
-				builder.append("[white].");
-			}
+	public void registerServerCommands(CommandHandler handler) {
+		Log.info("Registering " + String.valueOf(serverCommandRegisters.length) + " server commands");
+		for (ServerCommandRegister register : serverCommandRegisters) {
+			register.registerServerCommands(handler);
 		}
-		return builder.toString();
 	}
 
-	public static String getStyledMaps(String customColor) {
-		return getStyledMaps("[orange]", customColor);
-	}
-
-	public static String getStyledMaps() {
-		return getStyledMaps("[cyan]");
-	}
-
-	public static String getColoredPlayerName(Player player) {
-		return "[#" + player.color.toString() + "]" + player.name + "[]";
-	}
 }
