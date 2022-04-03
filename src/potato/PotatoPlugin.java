@@ -1,8 +1,6 @@
 package potato;
 
 import java.io.FileNotFoundException;
-import java.util.Iterator;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.jetbrains.annotations.NotNull;
@@ -101,18 +99,17 @@ public class PotatoPlugin extends Plugin {
 		lastMessage = lastMessage.thenRunAsync(() -> wc.send(s));
 	}
 
-    public void registerClientCommands(CommandHandler handler) {
-		Log.info("Registering " + String.valueOf(clientCommandRegisters.length) + " client commands");
+	@Override
+	public void registerClientCommands(CommandHandler handler) {
 		for (ClientCommandRegister register : clientCommandRegisters) {
 			register.registerClientCommands(handler);
 		}
 	}
 
+	@Override
 	public void registerServerCommands(CommandHandler handler) {
-		Log.info("Registering " + String.valueOf(serverCommandRegisters.length) + " server commands");
 		for (ServerCommandRegister register : serverCommandRegisters) {
 			register.registerServerCommands(handler);
 		}
 	}
-
 }

@@ -6,12 +6,18 @@ import mindustry.maps.Map;
 import arc.files.Fi;
 import arc.Core;
 import java.util.Iterator;
+import java.util.Arrays;
 import java.io.FileNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import arc.util.serialization.JsonValue;
 import arc.util.serialization.JsonReader;
 
 public class Util {
+
+	public static final String[] trueStrings = { "y", "yes", "true" };
+	public static final String[] falseStrings = { "n", "no", "false" };
+
 	public static JsonValue readJson(@NotNull String path) throws FileNotFoundException {
 		Fi config = Core.files.local(path);
 		if (config.exists()) {
@@ -56,5 +62,17 @@ public class Util {
 
 	public static String getColoredPlayerName(Player player) {
 		return "[#" + player.color.toString() + "]" + player.name + "[]";
+	}
+
+	@Nullable
+	public static Boolean stringToBool(String s) {
+		String ls = s.toLowerCase();
+
+		if (Arrays.stream(trueStrings).anyMatch(a -> ls.equals(a))) {
+			return Boolean.TRUE;
+		} else if (Arrays.stream(falseStrings).anyMatch(a -> ls.equals(a))) {
+			return Boolean.FALSE;
+		}
+		return null;
 	}
 }
