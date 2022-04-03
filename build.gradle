@@ -1,8 +1,6 @@
 apply plugin: "java"
 
-version '1.0'
-
-sourceCompatibility = 1.8
+sourceCompatibility = 8
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -25,6 +23,7 @@ dependencies {
     implementation 'club.minnced:discord-webhooks:0.8.0'
     implementation 'org.slf4j:slf4j-nop:1.7.32'
     implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'org.jetbrains:annotations:23.0.0'
 }
 
 jar {
