@@ -1,14 +1,10 @@
 package potato;
 
-import arc.ApplicationListener;
-import arc.Core;
 import arc.struct.ObjectMap;
 import arc.util.Timer;
 import arc.util.CommandHandler;
 import arc.util.CommandHandler.CommandRunner;
-import arc.util.Log;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 import mindustry.gen.*;
 import mindustry.maps.Map;
 import mindustry.Vars;
@@ -47,7 +43,7 @@ class Votemap implements ClientCommandRegister {
 				Call.sendMessage("[cyan]Changing next map to [acid]" + votedmap.get().name());
 				Util.overrideNextMap(votedmap.get());
 			} else {
-				Call.sendMessage("[red]Vote failed");
+				Call.sendMessage("[red]Map change vote failed");
 			}
 			votes.clear();
 			votedmap = Optional.empty();
@@ -71,7 +67,7 @@ class Votemap implements ClientCommandRegister {
 					} else {
 						votedmap = Optional.of(map);
 						Call.sendMessage(
-								Util.getColoredPlayerName(player) + " [white]started a " +
+								Util.getColoredPlayerName(player) + " [cyan]started a " +
 								String.valueOf(voteLength) + " second vote for map [acid]" + map.name()
 								);
 						initializeVote();

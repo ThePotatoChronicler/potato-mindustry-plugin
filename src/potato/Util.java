@@ -1,12 +1,14 @@
 package potato;
 
+import mindustry.game.EventType.GameOverEvent;
+import mindustry.game.Team;
 import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.maps.Map;
 import mindustry.server.ServerControl;
 import arc.files.Fi;
-import arc.ApplicationListener;
 import arc.Core;
+import arc.Events;
 import arc.util.Reflect;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -86,5 +88,11 @@ public class Util {
 		Map old = Reflect.get(ctrl, "nextMapOverride");
 		Reflect.set(ctrl, "nextMapOverride", override);
 		return old;
+	}
+
+	/* Fires a game over
+	 */
+	public static void gameOver() {
+		Events.fire(new GameOverEvent(Team.derelict));
 	}
 }

@@ -26,7 +26,7 @@ public class PotatoPlugin extends Plugin {
 	protected CompletableFuture<?> lastMessage;
 
 	// Command Registers
-	protected ClientCommandRegister[] clientCommandRegisters = { new Votemap() };
+	protected ClientCommandRegister[] clientCommandRegisters = { new Votemap(), new Voteskip() };
 	protected ServerCommandRegister[] serverCommandRegisters = {};
 
 	public PotatoPlugin() {
