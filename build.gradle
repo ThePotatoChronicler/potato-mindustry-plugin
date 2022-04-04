@@ -20,6 +20,7 @@ ext {
 dependencies {
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Mindustry:server:$mindustryVersion"
     implementation 'club.minnced:discord-webhooks:0.8.0'
     implementation 'org.slf4j:slf4j-nop:1.7.32'
     implementation 'mysql:mysql-connector-java:8.0.28'

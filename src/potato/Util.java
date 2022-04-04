@@ -3,8 +3,11 @@ package potato;
 import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.maps.Map;
+import mindustry.server.ServerControl;
 import arc.files.Fi;
+import arc.ApplicationListener;
 import arc.Core;
+import arc.util.Reflect;
 import java.util.Iterator;
 import java.util.Arrays;
 import java.io.FileNotFoundException;
@@ -74,5 +77,14 @@ public class Util {
 			return Boolean.FALSE;
 		}
 		return null;
+	}
+
+	/* Overrides next map, returning the old one
+	 */
+	public static Map overrideNextMap(Map override) {
+		ServerControl ctrl = (ServerControl)Core.app.getListeners().find(appl -> appl instanceof ServerControl);
+		Map old = Reflect.get(ctrl, "nextMapOverride");
+		Reflect.set(ctrl, "nextMapOverride", override);
+		return old;
 	}
 }

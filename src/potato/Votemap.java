@@ -30,15 +30,11 @@ class Votemap implements ClientCommandRegister {
 		for (int delay = voteInterval; delay < voteLength; delay += voteInterval) {
 			final int time_left = voteLength - delay; // delay can't be used in lambda, this is a workaround
 			Timer.schedule(() -> {
-				Call.sendMessage(String.valueOf(time_left) + " seconds until end of vote");
+				Call.sendMessage(String.valueOf(time_left) + " seconds until end of map vote");
 			}, delay);
 		}
 
 		Timer.schedule(finalizeVote, voteLength);
-	}
-
-	public static void overrideNextMap(@NotNull Map m) {
-		// TODO: Implement this lol
 	}
 
 	Runnable finalizeVote =
@@ -48,7 +44,8 @@ class Votemap implements ClientCommandRegister {
 				if (vote) yes++;
 			}
 			if ((double)yes / (double)votes.size >= ratio) {
-				Call.sendMessage("[cyan]Changing map to [acid]" + votedmap.get().name());
+				Call.sendMessage("[cyan]Changing next map to [acid]" + votedmap.get().name());
+				Util.overrideNextMap(votedmap.get());
 			} else {
 				Call.sendMessage("[red]Vote failed");
 			}
