@@ -8,8 +8,8 @@ import mindustry.gen.*;
 
 class Voteskip implements ClientCommandRegister {
 
-	public final static int voteLength = 60;
-	public final static int voteInterval = 15;
+	public final static int voteLength = 30;
+	public final static int voteInterval = 10;
 	public final static double ratio = 0.5d;
 	protected boolean voting = false;
 	protected ObjectMap<String, Boolean> votes = new ObjectMap<>();
@@ -36,11 +36,17 @@ class Voteskip implements ClientCommandRegister {
 			for (Boolean vote : votes.values()) {
 				if (vote) yes++;
 			}
+			String rateString =
+				String.format("[[[green]%d[]/[red]%d[]/[yellow]%d[]]",
+					yes,
+					votes.size - yes,
+					votes.size
+					);
 			if ((double)yes / (double)votes.size >= ratio) {
-				Call.sendMessage("[cyan]Skipping map");
+				Call.sendMessage("[cyan]Skipping map " + rateString);
 				Util.gameOver();
 			} else {
-				Call.sendMessage("[red]Map skip vote failed");
+				Call.sendMessage("[red]Map skip vote failed " + rateString);
 			}
 			votes.clear();
 			voting = false;
@@ -53,7 +59,7 @@ class Voteskip implements ClientCommandRegister {
 					player.sendMessage("[red]A vote is already ongoing.");
 				} else {
 					initializeVote();
-					Call.sendMessage(Util.getColoredPlayerName(player) + " [cyan]started a vote to skip map.");
+					Call.sendMessage(Util.getColoredPlayerName(player) + " [cyan]started a " + String.valueOf(voteLength) + " second vote to skip map.");
 				}
 			} else {
 				if (voting) {

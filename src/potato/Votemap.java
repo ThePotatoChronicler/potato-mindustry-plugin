@@ -11,8 +11,8 @@ import mindustry.Vars;
 
 class Votemap implements ClientCommandRegister {
 
-	public final static int voteLength = 60;
-	public final static int voteInterval = 15;
+	public final static int voteLength = 30;
+	public final static int voteInterval = 10;
 	public final static double ratio = 0.5d;
 	protected Optional<Map> votedmap = Optional.empty();
 	protected ObjectMap<String, Boolean> votes = new ObjectMap<>();
@@ -39,11 +39,18 @@ class Votemap implements ClientCommandRegister {
 			for (Boolean vote : votes.values()) {
 				if (vote) yes++;
 			}
+
+			String rateString =
+				String.format("[[[green]%d[]/[red]%d[]/[yellow]%d[]]",
+					yes,
+					votes.size - yes,
+					votes.size
+					);
 			if ((double)yes / (double)votes.size >= ratio) {
-				Call.sendMessage("[cyan]Changing next map to [acid]" + votedmap.get().name());
+				Call.sendMessage("[cyan]Changing next map to [acid]" + votedmap.get().name() + " []" + rateString);
 				Util.overrideNextMap(votedmap.get());
 			} else {
-				Call.sendMessage("[red]Map change vote failed");
+				Call.sendMessage("[red]Map change vote failed " + rateString);
 			}
 			votes.clear();
 			votedmap = Optional.empty();
