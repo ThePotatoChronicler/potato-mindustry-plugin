@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.jetbrains.annotations.NotNull;
 import arc.Events;
+import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.serialization.JsonValue;
 import arc.util.CommandHandler;
@@ -64,8 +65,13 @@ public class PotatoPlugin extends Plugin {
 		});
 
 		Events.on(PlayerLeave.class, event -> {
-			int playerCount = Groups.player.size() - 1;
-			dsend(String.format("**%s** left the server (%d player%s)", event.player.name, playerCount, playerCount == 1 ? "" : "s"));
+			int oldPlayerCount = Groups.player.size() - 1;
+			Seq<Player> players = Groups.player.copy(new Seq<>());
+			players.remove(event.player);
+			int playerCount = players.size;
+
+			dsend(String.format("**%s** left the server (%d player%s [old: %d])",
+						event.player.name, playerCount, playerCount == 1 ? "" : "s", oldPlayerCount));
 			if (playerCount == 0 && Vars.state.serverPaused == false) {
 				Vars.state.serverPaused = true;
 				dsend("All players left, pausing game.");
