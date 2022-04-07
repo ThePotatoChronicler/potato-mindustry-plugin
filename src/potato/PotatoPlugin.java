@@ -65,13 +65,19 @@ public class PotatoPlugin extends Plugin {
 		});
 
 		Events.on(PlayerLeave.class, event -> {
-			int oldPlayerCount = Groups.player.size() - 1;
+
+			/* This method of getting the player list is used instead of directly
+			 * using Groups.player, because Groups.player inconsistently removes
+			 * players after leaving. Sometimes, they're left in this list after
+			 * leaving, sometimes they're not. This is one such way to assure
+			 * you always get the correct list.
+			 */
 			Seq<Player> players = Groups.player.copy(new Seq<>());
 			players.remove(event.player);
 			int playerCount = players.size;
 
-			dsend(String.format("**%s** left the server (%d player%s [old: %d])",
-						event.player.name, playerCount, playerCount == 1 ? "" : "s", oldPlayerCount));
+			dsend(String.format("**%s** left the server (%d player%s)",
+						event.player.name, playerCount, playerCount == 1 ? "" : "s"));
 			if (playerCount == 0 && Vars.state.serverPaused == false) {
 				Vars.state.serverPaused = true;
 				dsend("All players left, pausing game.");
