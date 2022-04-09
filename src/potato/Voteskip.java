@@ -19,6 +19,12 @@ class Voteskip implements ClientCommandRegister {
 	}
 
 	protected void initializeVote() {
+		if (Groups.player.size() == 1) {
+			Call.sendMessage("[cyan]Skipping vote due to only one player being online");
+			Util.gameOver();
+			return;
+		}
+
 		voting = true;
 		for (int delay = voteInterval; delay < voteLength; delay += voteInterval) {
 			final int time_left = voteLength - delay; // delay can't be used in lambda, this is a workaround

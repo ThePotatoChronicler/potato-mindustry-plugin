@@ -22,7 +22,15 @@ class Votemap implements ClientCommandRegister {
 		handler.<Player>register("vote", "<yes/no/clear>", "Votes for or against the next map, or clears a previous vote.", vote);
 	}
 
-	protected void initializeVote() {
+	protected void initializeVote(Map map) {
+		if (Groups.player.size() == 1) {
+			Call.sendMessage("[cyan]Skipping vote due to only one player being online");
+			Util.overrideNextMap(map);
+			return;
+		}
+
+		votedmap = Optional.of(map);
+
 		for (int delay = voteInterval; delay < voteLength; delay += voteInterval) {
 			final int time_left = voteLength - delay; // delay can't be used in lambda, this is a workaround
 			Timer.schedule(() -> {
@@ -72,12 +80,11 @@ class Votemap implements ClientCommandRegister {
 					if (map == null) {
 						player.sendMessage("[red]This map doesn't exist");
 					} else {
-						votedmap = Optional.of(map);
+						initializeVote(map);
 						Call.sendMessage(
 								Util.getColoredPlayerName(player) + " [cyan]started a " +
 								String.valueOf(voteLength) + " second vote for map [acid]" + map.name()
 								);
-						initializeVote();
 					}
 				}
 			}
