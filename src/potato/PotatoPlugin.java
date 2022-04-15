@@ -1,6 +1,8 @@
 package potato;
 
 import java.io.FileNotFoundException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +16,6 @@ import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.mod.Plugin;
 import mindustry.game.EventType.*;
-import club.minnced.discord.webhook.WebhookClient;
-import club.minnced.discord.webhook.WebhookClientBuilder;
 
 public class PotatoPlugin extends Plugin {
 
@@ -23,7 +23,7 @@ public class PotatoPlugin extends Plugin {
 	public static final String configPath = "config/potato.json";
 	protected JsonValue settings;
 	protected ScheduledThreadPoolExecutor executor;
-	public WebhookClient wc;
+	protected WebhookClient wc;
 	protected CompletableFuture<?> lastMessage;
 
 	// Command Registers
@@ -40,9 +40,7 @@ public class PotatoPlugin extends Plugin {
 
 		executor = new ScheduledThreadPoolExecutor(java.lang.Runtime.getRuntime().availableProcessors());
 
-		wc = new WebhookClientBuilder(settings.getString("webhook_url"))
-			.setExecutorService(executor)
-			.build();
+		wc = new WebhookClient(settings.getString("webhook_url"), Optional.of(executor));
 
 		lastMessage = CompletableFuture.completedFuture(null);
 	}
@@ -108,7 +106,8 @@ public class PotatoPlugin extends Plugin {
 	/* Asynchronously sends a discord message
 	 */
 	protected void dsend(@NotNull String s) {
-		lastMessage = lastMessage.thenRunAsync(() -> wc.send(s));
+		// There is no check if it's non-null because WebhookClient.send already does that
+		lastMessage = lastMessage.thenComposeAsync((r) -> wc.send(s));
 	}
 
 	@Override
