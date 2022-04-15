@@ -101,13 +101,26 @@ public class PotatoPlugin extends Plugin {
 				dsend(String.format("**%d** online players reached wave **%d**", Groups.player.size(), Vars.state.wave));
 			}
 		});
+
+		Events.on(PlayerChatEvent.class, event -> {
+			String url = "https://mindustrygame.github.io/wiki/images/unit-" + event.player.unit().type.name + "-ui.png";
+			dsend(event.message, event.player.name(), url);
+		});
 	}
 
 	/* Asynchronously sends a discord message
 	 */
-	protected void dsend(@NotNull String s) {
+	protected void dsend(@NotNull String content) {
 		// There is no check if it's non-null because WebhookClient.send already does that
-		lastMessage = lastMessage.thenComposeAsync((r) -> wc.send(s));
+		lastMessage = lastMessage.thenComposeAsync((r) -> wc.send(content));
+	}
+
+	public void dsend(@NotNull String content, String username) {
+		lastMessage = lastMessage.thenComposeAsync((r) -> wc.send(content, username));
+	}
+
+	public void dsend(@NotNull String content, String username, String avatar) {
+		lastMessage = lastMessage.thenComposeAsync((r) -> wc.send(content, username, avatar));
 	}
 
 	@Override
