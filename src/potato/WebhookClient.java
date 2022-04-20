@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import arc.util.Log;
 
 class WebhookClient {
@@ -94,6 +95,17 @@ class WebhookClient {
 		if (avatar.isPresent()) {
 			json.addProperty("avatar_url", avatar.get());
 		}
+
+		// disallowing people from abusing @everyone, @here or @<roles>
+		JsonObject parse = new JsonObject();
+
+		// making a json array of what people will be able to ping
+		JsonArray parseList = new JsonArray(1); 
+		parseList.add("users");
+
+		// nest the parser inside the allowed_mentions property
+		parse.add("parse", parseList);
+		json.add("allowed_mentions", parse);
 
 		return execute(json);
 	}
